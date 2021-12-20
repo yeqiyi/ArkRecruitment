@@ -9,11 +9,9 @@
 <script>
 import CharacterList from '@/data/CharacterData.json'
 import CharacterSlot from '@/components/CharacterSlot.vue'
-import TagBtn from '@/components/TagBtn.vue'
   export default {
     components:{
         CharacterSlot,
-        TagBtn
     },
    data: () => ({
       check:false,

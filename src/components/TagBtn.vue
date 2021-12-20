@@ -7,8 +7,8 @@
     type="checkbox"
     style="display:none;"
     :checked="checked"
-     @change="canChecked?$emit('change',$event.target.checked):false"
-     @click="$emit('update-st',tagType,tagIdx)"
+    @change="canChecked?$emit('change',$event.target.checked):false"
+    @click="UpdateST"
     >
     <slot></slot>
     </label>
@@ -21,24 +21,29 @@ export default {
         event:'change',
     },
     props:{
+        isLabel:Boolean,
         checked:Boolean,
         canChecked:Boolean,
         checkColor:String,
-        tagType:String,
-        tagIdx:Number
+        tagPos:Object,
     },
     data:()=>({
         
     }),
     computed:{
         TagStyle(){
-            if(!this.canChecked){
+            if(this.isLabel){
                 return ['pink lighten-1','white--text'];
-            }else{
+            }else {
                 return this.checked?[`${this.checkColor}`,'white--text']:['brown','lighten-3'];
             }
         }
-    }
+    },
+    methods: {
+        UpdateST(){
+            this.$emit('update-st',this.tagPos,this.checked);
+        }
+    },
 }
 </script>
 <style lang="scss" scoped>

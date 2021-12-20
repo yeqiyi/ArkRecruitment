@@ -7,29 +7,35 @@
             <template v-slot:default>
                 <tbody>
             <tr v-for="tagType in tagTypes" :key="tagType">
-                <td><tag-btn :canChecked=false>{{tagType}}</tag-btn></td>
-                <td><tag-btn v-for="i in allTags[tagType].length" :key="i" v-model="tagsStat[tagType][i-1]" :update-st="updatest" :tagType=tagType :tagIdx=i :canChecked=true :checkColor="'brown'">{{allTags[String(tagType)][i-1]}}</tag-btn></td>
+                <td><tag-btn :canChecked=false :isLabel=true>{{tagType}}</tag-btn></td>
+                <td><tag-btn v-for="i in allTags[tagType].length" :key="i" v-model="tagsStat[tagType][i-1]" @update-st="updatest" :tagPos="tagPos(tagType,i-1)" :canChecked="canChecked" :checkColor="'brown'">{{allTags[String(tagType)][i-1]}}</tag-btn></td>
             </tr>
                 </tbody>
             </template>
         </v-simple-table>
-        {{SelectedTags}}
 </div>
 </template>
 <script>
 import _ from 'lodash'
 import TagBtn from '@/components/TagBtn.vue'
 import strings from '@/data/Strings.json'
-const Max_Selects=5;
+const MaxNum=5;
+class tagPos{
+    constructor(tagType='',idx=0){
+        this.tagType=tagType;
+        this.idx=idx;
+    }
+}
 export default {
     name:'recruitment',
     components:{
         TagBtn
     },
     data:()=>({
-        checked:false,
         tagsStat:_.mapValues(strings.tags,(o)=>Array(o.length).fill(false)),
-        SelectedTags:[]
+        SelectedTags:[],
+        lastSelect:new tagPos(),
+        canChecked:true,
     }),
     computed:{
         tagTypes(){
@@ -40,18 +46,47 @@ export default {
         },
     },
     methods: {
-        updatest:function(type,idx){
-            if(this.SelectedTags.length==Max_Selects){
-                alert('最多只能选择5个标签哦!');
-                return
+        tagPos:function(tagType,idx){
+            return new tagPos(tagType,idx);
+        },
+        updatest:function(pos,checked){
+            var {tagType,idx}=pos;
+            this.lastSelect=pos;
+            //console.log(tagType,idx,checked,this.allTags[tagType][idx]);
+            if(false==checked&&this.SelectedTags.length==MaxNum){
+                alert("最多只能选择5个标签喔");
+                return;
             }
-            if(true==this.tagsStat[type][idx]){
-                this.SelectedTags.push(this.allTags[type][idx]);
+            if(checked==false){
+                this.SelectedTags.push(this.allTags[tagType][idx]);
             }else{
-                alert('lalalal...');
-            }     
-        }
+                _.remove(this.SelectedTags,(i)=>(i==this.allTags[tagType][idx]));
+            }        
+        },
     },
+    watch:{
+        tagsStat:{
+            handler(tagsStat){
+                /*
+                    for(let tagType of Object.keys(tagsStat)){
+                       for(let i=0;i<tagsStat[tagType].length;i++){
+                           tagsStat[tagType][i]=false;
+                            for(let tag of this.SelectedTags){
+                                if(tag==this.allTags[tagType][i]){
+                                    tagsStat[tagType][i]=true;
+                                    break;
+                                }
+                            }
+                       }
+                    }
+                */
+               const {tagType,idx}=this.lastSelect;
+               //console.log(this.lastSelect);
+               tagsStat[tagType][idx]=_.includes(this.SelectedTags,this.allTags[tagType][idx]);
+            },
+            deep:true,
+        }
+    }
 }
 </script>
 <style lang="scss">
