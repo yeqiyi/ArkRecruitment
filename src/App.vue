@@ -1,28 +1,41 @@
 <template>
+<v-app>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="main-container">
+    <div>
+    <recruitment/>
+    </div>
   </div>
+  </div>
+</v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
+  data:()=>({
+    
+    VuetifyTestbooks:[
+      'book1',
+      'book3',
+      'book2',
+    ],
+  })
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style lang="scss">
+@import '~vuetify/src/styles/styles.sass';
+
+#app{
+  font-family: 'Roboto Mono', Roboto, Noto, Helvetica, Arial, sans-serif;
+  font-size: $font-size-root;
+  //background: url("assets/background.jpg") no-repeat;
+  background-size: cover;
+}
+.main-container{
+  width: 94%;
+  max-width: 1280px;
+  margin:10px auto;
 }
 </style>
