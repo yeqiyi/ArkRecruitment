@@ -1,4 +1,4 @@
-# vue2.0-learn
+# ArkRecruitment
 
 ## Project setup
 ```
