@@ -41,7 +41,7 @@ export default {
     },
     methods: {
         UpdateST(){
-            this.$emit('update-st',this.tagPos,this.checked);
+            this.$emit('update',this.tagPos,this.checked);
         }
     },
 }
@@ -62,6 +62,8 @@ export default {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    transition: background-color 500ms;
+    transition: color 300ms;
 }
 .tag-btn:hover{
     box-shadow: 0px 0px 5px;

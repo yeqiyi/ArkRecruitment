@@ -8,11 +8,19 @@
                 <tbody>
             <tr v-for="tagType in tagTypes" :key="tagType">
                 <td><tag-btn :canChecked=false :isLabel=true>{{tagType}}</tag-btn></td>
-                <td><tag-btn v-for="i in allTags[tagType].length" :key="i" v-model="tagsStat[tagType][i-1]" @update-st="updatest" :tagPos="tagPos(tagType,i-1)" :canChecked="canChecked" :checkColor="'brown'">{{allTags[String(tagType)][i-1]}}</tag-btn></td>
+                <td v-if="tagType=='星级'">
+                    <tag-btn  v-model="selectAll" @update="SelectAll" :canChecked="canChecked" :checkColor="'brown'">全选</tag-btn>
+                    <tag-btn  v-for="i in allTags[tagType].length" :key="i" v-model="starfilter[6-i]"  :canChecked="canChecked" :checkColor="starColors[6-i]">{{allTags[String(tagType)][6-i]}}</tag-btn>
+                    </td>
+                <td v-else>
+                    <tag-btn v-for="i in allTags[tagType].length" :key="i" v-model="tagsStat[tagType][i-1]" @update="updatest" :tagPos="tagPos(tagType,i-1)" :canChecked="canChecked" :checkColor="'brown'">{{allTags[String(tagType)][i-1]}}</tag-btn>
+                    </td>
             </tr>
                 </tbody>
             </template>
         </v-simple-table>
+        <p>{{starfilter}}</p>
+        {{SelectedTags}}
 </div>
 </template>
 <script>
@@ -33,9 +41,19 @@ export default {
     },
     data:()=>({
         tagsStat:_.mapValues(strings.tags,(o)=>Array(o.length).fill(false)),
+        starfilter:Array(6).fill(true),
+        selectAll:true,
         SelectedTags:[],
         lastSelect:new tagPos(),
         canChecked:true,
+        starColors:[
+            "grey",
+            "brown",
+            "green",
+            "blue",
+            "red",
+            "orange"
+        ]
     }),
     computed:{
         tagTypes(){
@@ -62,7 +80,13 @@ export default {
             }else{
                 _.remove(this.SelectedTags,(i)=>(i==this.allTags[tagType][idx]));
             }        
+             console.log(this.SelectedTags);
         },
+        SelectAll:function(pos,checked){
+            for(let i=0;i<this.starfilter.length;i++){
+                this.starfilter[i]=!checked;
+            }
+        }
     },
     watch:{
         tagsStat:{
@@ -85,6 +109,18 @@ export default {
                tagsStat[tagType][idx]=_.includes(this.SelectedTags,this.allTags[tagType][idx]);
             },
             deep:true,
+        },
+        starfilter:{
+            handler(starfilter){
+                for(let i=0;i<starfilter.length;i++){
+                    if(!starfilter[i]){
+                        this.selectAll=false;
+                        return
+                    }
+                }
+                this.selectAll=true;
+            },
+            deep:true,
         }
     }
 }
@@ -95,7 +131,7 @@ export default {
     padding:0px 10px;
     border-radius: 15px;
     width:fit-content;
-    margin:auto;
+    margin:10px auto;
     background-color: rgba(255,255,255,.36);
 }
 tr:hover{
