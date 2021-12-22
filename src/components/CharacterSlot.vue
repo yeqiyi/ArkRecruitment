@@ -11,7 +11,7 @@
     >
     <img :src="avatar"/>
     </v-avatar>
-    <span class="text-button charname">amiya</span>
+    <span class="text-button charname">{{character.Cn_name}}</span>
     </v-btn>
 </template>
 <script>
@@ -40,9 +40,11 @@ export default {
 <style lang="scss" scoped>
 .char-label{
     padding:3px !important;
+    margin:2px 3px;
 }
 .charname{
     margin-left: 5px;
     text-transform: capitalize !important;
+    color: white;
 }
 </style>

@@ -19,14 +19,44 @@
                 </tbody>
             </template>
         </v-simple-table>
-        <p>{{starfilter}}</p>
-        {{SelectedTags}}
+        <div id="result-list">
+            <!--<char-slot v-for="i in Object.keys(characters)" :key="i" :character="characters[i]"/>-->
+            <v-simple-table
+            fixed-header
+            class="result-container"
+            >
+                <template v-slot:default>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>词条</th>
+                            <th>可能出现的干员</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="i in filterResults.length" :key="`comb-${i}`">
+                            <td width="5%">{{i}}</td>
+                            <td width="20%">
+                                <tag-btn v-for="tag in filterResults[i-1].comb" :key="tag" :canChecked=false :isLabel=true>{{tag}}</tag-btn>
+                            </td>
+                            <td width="75%">
+                                <char-slot v-for="char_id in filterResults[i-1].chars" :key="char_id" :character="characters[char_id]"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </template>
+            </v-simple-table>
+        </div>
 </div>
 </template>
 <script>
 import _ from 'lodash'
 import TagBtn from '@/components/TagBtn.vue'
+import CharSlot from '@/components/CharacterSlot.vue'
 import strings from '@/data/Strings.json'
+import Characters from '@/data/CharacterData.json'
+import Tag2Char from '@/data/TagtoChar.json'
+
 const MaxNum=5;
 class tagPos{
     constructor(tagType='',idx=0){
@@ -34,10 +64,19 @@ class tagPos{
         this.idx=idx;
     }
 }
+
+class comb2char{
+    constructor(comb,chars){
+        this.comb=comb;
+        this.chars=chars;
+    }
+}
+
 export default {
     name:'recruitment',
     components:{
-        TagBtn
+        TagBtn,
+        CharSlot
     },
     data:()=>({
         tagsStat:_.mapValues(strings.tags,(o)=>Array(o.length).fill(false)),
@@ -53,7 +92,9 @@ export default {
             "blue",
             "red",
             "orange"
-        ]
+        ],
+
+        characters:Characters,
     }),
     computed:{
         tagTypes(){
@@ -61,6 +102,53 @@ export default {
         },
         allTags(){
             return strings.tags;
+        },
+        //找出所有标签组合
+        tagCombination(){
+            var size=2**this.SelectedTags.length;
+            var allComb=[];
+            for(let i=1;i<size;i++){
+                let l=i;
+                var comb=[];
+                var idx=0;
+                while(l>0){
+                    var t=l&1;
+                    if(t==1){
+                        comb.push(this.SelectedTags[idx]);
+                    }
+                    l>>=1;
+                    idx++;
+                }
+                allComb.push(comb);
+            }
+            return allComb.sort((a,b)=>(b.length-a.length));//按词条结合长度从大到小排序
+        },
+        filterResults(){
+            var result=[];
+            for(let comb of this.tagCombination){
+                console.log('comb',comb);
+                if(comb.length<1){
+                    continue;
+                }
+                var charSet=Tag2Char[comb[0]];
+                for(let tag of comb){
+                    charSet=charSet.filter((v)=>(Tag2Char[tag].indexOf(v)>-1))
+                }
+                charSet=charSet.filter((v)=>(Characters[v].Approach==1));//排除非公招干员
+                if(comb.indexOf("高级资深干员")!=-1){
+                    charSet=charSet.filter((v)=>(Characters[v].Star==6));
+                }else if(comb.indexOf("资深干员")!=-1){
+                    charSet=charSet.filter((v)=>(Characters[v].Star==5));
+                }else{
+                    charSet=charSet.filter((v)=>(Characters[v].Star!=6));
+                }
+                if(charSet.length){
+
+                    result.push(new comb2char(comb,charSet));
+                }
+            }
+            console.log(result);
+            return result;
         },
     },
     methods: {
@@ -78,9 +166,9 @@ export default {
             if(checked==false){
                 this.SelectedTags.push(this.allTags[tagType][idx]);
             }else{
-                _.remove(this.SelectedTags,(i)=>(i==this.allTags[tagType][idx]));
+                this.SelectedTags=_.remove(this.SelectedTags,(i)=>(i!=this.allTags[tagType][idx]));
             }        
-             console.log(this.SelectedTags);
+            //console.log(this.SelectedTags);
         },
         SelectAll:function(pos,checked){
             for(let i=0;i<this.starfilter.length;i++){
@@ -91,19 +179,6 @@ export default {
     watch:{
         tagsStat:{
             handler(tagsStat){
-                /*
-                    for(let tagType of Object.keys(tagsStat)){
-                       for(let i=0;i<tagsStat[tagType].length;i++){
-                           tagsStat[tagType][i]=false;
-                            for(let tag of this.SelectedTags){
-                                if(tag==this.allTags[tagType][i]){
-                                    tagsStat[tagType][i]=true;
-                                    break;
-                                }
-                            }
-                       }
-                    }
-                */
                const {tagType,idx}=this.lastSelect;
                //console.log(this.lastSelect);
                tagsStat[tagType][idx]=_.includes(this.SelectedTags,this.allTags[tagType][idx]);
@@ -130,11 +205,11 @@ export default {
     border:thin solid rgba(0,0,0,.12);
     padding:0px 10px;
     border-radius: 15px;
-    width:fit-content;
+    width:95%;
     margin:10px auto;
     background-color: rgba(255,255,255,.36);
 }
-tr:hover{
+.result-container tr:hover{
     background-color: rgba(255,255,255,0) !important;
 }
 .theme--light.v-data-table {

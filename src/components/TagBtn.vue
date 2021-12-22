@@ -41,7 +41,7 @@ export default {
     },
     methods: {
         UpdateST(){
-            this.$emit('update',this.tagPos,this.checked);
+            this.$emit('update',this.tagPos??{},this.checked);
         }
     },
 }
