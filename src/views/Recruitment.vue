@@ -29,17 +29,17 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>词条</th>
-                            <th>可能出现的干员</th>
+                            <th >词条</th>
+                            <th >可能出现的干员</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="i in filterResults.length" :key="`comb-${i}`">
-                            <td width="5%">{{i}}</td>
-                            <td width="20%">
+                            <td>{{i}}</td>
+                            <td>
                                 <tag-btn v-for="tag in filterResults[i-1].comb" :key="tag" :canChecked=false :isLabel=true>{{tag}}</tag-btn>
                             </td>
-                            <td width="75%">
+                            <td>
                                 <char-slot v-for="char_id in filterResults[i-1].chars" :key="char_id" :character="characters[char_id]"/>
                             </td>
                         </tr>
@@ -142,6 +142,7 @@ export default {
                 }else{
                     charSet=charSet.filter((v)=>(Characters[v].Star!=6));
                 }
+                charSet.sort((a,b)=>(this.characters[b].Star-this.characters[a].Star))
                 if(charSet.length){
 
                     result.push(new comb2char(comb,charSet));
@@ -203,7 +204,6 @@ export default {
 <style lang="scss">
 .v-data-table__wrapper{
     border:thin solid rgba(0,0,0,.12);
-    padding:0px 10px;
     border-radius: 15px;
     width:95%;
     margin:10px auto;
@@ -212,7 +212,18 @@ export default {
 .result-container tr:hover{
     background-color: rgba(255,255,255,0) !important;
 }
-.theme--light.v-data-table {
+th{
+    &:nth-child(1){
+        width: 5%;
+    }
+    &:nth-child(2){
+        width: 20%;
+    }
+    &:nth-child(3){
+        width: 75%;
+    }
+}
+.theme--light.v-data-table{
     background:none;
 }
 </style>

@@ -30,7 +30,9 @@ export default {
 #app{
   font-family: 'Roboto Mono', Roboto, Noto, Helvetica, Arial, sans-serif;
   font-size: $font-size-root;
- 
+  background-image: url('./assets/background.jpg');
+  background-size: cover;
+  background-attachment: fixed;
 }
 .main-container{
   width: 94%;

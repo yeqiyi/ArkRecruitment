@@ -1,7 +1,7 @@
 <template>
     <v-btn
     class="char-label"
-    :color="colors[4]"
+    :color="slotColor"
     height="45px"
     min-width="0px"
     >
@@ -15,24 +15,28 @@
     </v-btn>
 </template>
 <script>
+const colors=[
+            "grey",
+            "brown",
+            "green",
+            "blue",
+            "red",
+            "orange"
+        ]
 export default {
     name:'char-slot',
     props:{
         character:Object
     },
     data:()=>({
-        colors:[
-            "gray",
-            "brown",
-            "green",
-            "blue",
-            "red",
-            "orange"
-        ],
+        
     }),
     computed: {
         avatar(){
             return `assets/avatar/${this.character.Id}.png`;
+        },
+        slotColor(){
+            return colors[this.character.Star-1];
         }
     },
 }
