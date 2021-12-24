@@ -14,12 +14,7 @@
 export default {
   name: 'App',
   data:()=>({
-    
-    VuetifyTestbooks:[
-      'book1',
-      'book3',
-      'book2',
-    ],
+ 
   })
 }
 </script>

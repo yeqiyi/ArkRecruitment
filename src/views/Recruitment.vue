@@ -34,13 +34,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="i in filterResults.length" :key="`comb-${i}`">
+                        <tr v-for="i in finalResults.length" :key="`comb-${i}`">
                             <td>{{i}}</td>
                             <td>
-                                <tag-btn v-for="tag in filterResults[i-1].comb" :key="tag" :canChecked=false :isLabel=true>{{tag}}</tag-btn>
+                                <tag-btn v-for="tag in finalResults[i-1].comb" :key="tag" :canChecked=false :isLabel=true>{{tag}}</tag-btn>
                             </td>
                             <td>
-                                <char-slot v-for="char_id in filterResults[i-1].chars" :key="char_id" :character="characters[char_id]"/>
+                                <char-slot v-for="char_id in finalResults[i-1].chars" :key="char_id" :character="characters[char_id]"/>
                             </td>
                         </tr>
                     </tbody>
@@ -144,13 +144,22 @@ export default {
                 }
                 charSet.sort((a,b)=>(this.characters[b].Star-this.characters[a].Star))
                 if(charSet.length){
-
                     result.push(new comb2char(comb,charSet));
                 }
             }
             console.log(result);
             return result;
         },
+        finalResults(){
+            var fres=[];
+            this.filterResults.forEach((v)=>{
+                var tmp=v.chars.filter((v)=>(this.starfilter[Characters[v].Star-1]));
+                if(tmp.length>0){
+                    fres.push(new comb2char(v.comb,tmp));
+                }
+            })
+            return fres;
+        }
     },
     methods: {
         tagPos:function(tagType,idx){
@@ -175,7 +184,7 @@ export default {
             for(let i=0;i<this.starfilter.length;i++){
                 this.starfilter[i]=!checked;
             }
-        }
+        },
     },
     watch:{
         tagsStat:{
@@ -207,7 +216,7 @@ export default {
     border-radius: 15px;
     width:95%;
     margin:10px auto;
-    background-color: rgba(255,255,255,.36);
+    background-color: rgba(255,255,255,0.60);
 }
 .result-container tr:hover{
     background-color: rgba(255,255,255,0) !important;
