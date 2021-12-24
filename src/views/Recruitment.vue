@@ -6,19 +6,31 @@
         >
             <template v-slot:default>
                 <tbody>
-            <tr v-for="tagType in tagTypes" :key="tagType">
-                <td><tag-btn :canChecked=false :isLabel=true>{{tagType}}</tag-btn></td>
-                <td v-if="tagType=='星级'">
-                    <tag-btn  v-model="selectAll" @update="SelectAll" :canChecked="canChecked" :checkColor="'brown'">全选</tag-btn>
-                    <tag-btn  v-for="i in allTags[tagType].length" :key="i" v-model="starfilter[6-i]"  :canChecked="canChecked" :checkColor="starColors[6-i]">{{allTags[String(tagType)][6-i]}}</tag-btn>
+                <tr v-for="tagType in tagTypes" :key="tagType">
+                    <td><tag-btn :canChecked=false :isLabel=true>{{tagType}}</tag-btn></td>
+                    <td v-if="tagType=='星级'">
+                        <tag-btn  v-model="selectAll" @update="SelectAll" :canChecked="canChecked" :checkColor="'brown'">全选</tag-btn>
+                        <tag-btn  v-for="i in allTags[tagType].length" :key="i" v-model="starfilter[6-i]"  :canChecked="canChecked" :checkColor="starColors[6-i]">{{allTags[String(tagType)][6-i]}}</tag-btn>
+                        </td>
+                    <td v-else>
+                        <tag-btn v-for="i in allTags[tagType].length" :key="i" v-model="tagsStat[tagType][i-1]" @update="updatest" :tagPos="tagPos(tagType,i-1)" :canChecked="canChecked" :checkColor="'brown'">{{allTags[String(tagType)][i-1]}}</tag-btn>
+                        </td>
+                </tr>
+                <tr>
+                    <td><tag-btn :canChecked=false :isLabel=true>Option</tag-btn></td>
+                    <td><v-btn
+                        class="char-label purple white--text"
+                        height="36px"
+                        min-width="0px"
+                        @click="tagClean"
+                        >
+                        <span class="text-button charname">重置</span>
+                        </v-btn>
                     </td>
-                <td v-else>
-                    <tag-btn v-for="i in allTags[tagType].length" :key="i" v-model="tagsStat[tagType][i-1]" @update="updatest" :tagPos="tagPos(tagType,i-1)" :canChecked="canChecked" :checkColor="'brown'">{{allTags[String(tagType)][i-1]}}</tag-btn>
-                    </td>
-            </tr>
+                </tr>
                 </tbody>
             </template>
-        </v-simple-table>
+            </v-simple-table>
         <div id="result-list">
             <!--<char-slot v-for="i in Object.keys(characters)" :key="i" :character="characters[i]"/>-->
             <v-simple-table
@@ -159,7 +171,7 @@ export default {
                 }
             })
             return fres;
-        }
+        },
     },
     methods: {
         tagPos:function(tagType,idx){
@@ -185,6 +197,10 @@ export default {
                 this.starfilter[i]=!checked;
             }
         },
+        tagClean:function(){
+            this.SelectedTags=[];
+            this.tagsStat=_.mapValues(strings.tags,(o)=>Array(o.length).fill(false));
+        }
     },
     watch:{
         tagsStat:{
