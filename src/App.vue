@@ -25,7 +25,9 @@ export default {
 #app{
   font-family: 'Roboto Mono', Roboto, Noto, Helvetica, Arial, sans-serif;
   font-size: $font-size-root;
-  background-image: url('./assets/background.jpg');
+  //background-image: url('./assets/background.jpg');
+  background-image: linear-gradient(
+to bottom, #3c0101, #100000);
   background-size: cover;
   background-attachment: fixed;
 }

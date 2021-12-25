@@ -232,12 +232,14 @@ export default {
     border-radius: 15px;
     width:95%;
     margin:10px auto;
-    background-color: rgba(255,255,255,0.60);
+    background-color: rgba(255,255,255,0.40);
+    backdrop-filter: blur(2px);
 }
 .result-container tr:hover{
     background-color: rgba(255,255,255,0) !important;
 }
 th{
+    background-color: rgba(0,0,0,.20) !important;
     &:nth-child(1){
         width: 5%;
     }
