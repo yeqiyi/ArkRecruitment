@@ -1,11 +1,12 @@
 <template>
     <label
-    class="tag-btn"
+    class="label"
     :class="TagStyle"
     >
     <input
     type="checkbox"
     style="display:none;"
+    :disabled="!canChecked"
     :checked="checked"
     @change="canChecked?$emit('change',$event.target.checked):false"
     @click="UpdateST"
@@ -35,7 +36,7 @@ export default {
             if(this.isLabel){
                 return ['pink lighten-1','white--text'];
             }else {
-                return this.checked?[`${this.checkColor}`,'white--text']:['brown','lighten-3'];
+                return this.checked?[`${this.checkColor}`,'tag-btn','white--text']:['brown','tag-btn','lighten-3'];
             }
         }
     },
@@ -48,14 +49,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .tag-btn{
-    display: inline-block;
-    height:36px;
-    margin:5px 3px;
-    border-radius: 5px;
-    padding:0px 10px;
-    line-height: 36px;
-    min-width: 62px;
-    text-align: center;
     cursor: pointer;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -64,6 +57,16 @@ export default {
     user-select: none;
     transition: background-color 500ms;
     transition: color 300ms;
+}
+.label{
+    display: inline-block;
+    height:36px;
+    margin:5px 3px;
+    border-radius: 5px;
+    padding:0px 10px;
+    line-height: 36px;
+    min-width: 62px;
+    text-align: center;
 }
 .tag-btn:hover{
     box-shadow: 0px 0px 5px;

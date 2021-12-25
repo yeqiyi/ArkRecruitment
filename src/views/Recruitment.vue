@@ -230,12 +230,12 @@ export default {
 .v-data-table__wrapper{
     border:thin solid rgba(0,0,0,.12);
     border-radius: 15px;
-    width:95%;
+    width:85%;
     margin:10px auto;
     background-color: rgba(255,255,255,0.40);
     backdrop-filter: blur(2px);
 }
-.result-container tr:hover{
+.v-data-table__wrapper tr:hover{
     background-color: rgba(255,255,255,0) !important;
 }
 th{
