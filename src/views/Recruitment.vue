@@ -59,6 +59,26 @@
                 </template>
             </v-simple-table>
         </div>
+        <template>
+    <div class="text-center ma-2">
+        <v-snackbar
+        v-model="snackbar"
+        dark
+        >
+        最多只能选择5个标签喔!
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                color="pink"
+                text
+                v-bind="attrs"
+                @click="snackbar = false"
+                >
+                好
+                </v-btn>
+            </template>
+        </v-snackbar>
+  </div>
+</template>
 </div>
 </template>
 <script>
@@ -105,7 +125,7 @@ export default {
             "red",
             "orange"
         ],
-
+        snackbar:false,
         characters:Characters,
     }),
     computed:{
@@ -182,7 +202,8 @@ export default {
             this.lastSelect=pos;
             //console.log(tagType,idx,checked,this.allTags[tagType][idx]);
             if(false==checked&&this.SelectedTags.length==MaxNum){
-                alert("最多只能选择5个标签喔");
+                //alert("最多只能选择5个标签喔");
+                this.snackbar=true;
                 return;
             }
             if(checked==false){
